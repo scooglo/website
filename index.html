@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scooglo | próximamente...</title>
+    <meta name="description" content="Scooglo - Sinergia Cooperativa Global. Próximamente.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
+            --grid-color: rgba(0, 102, 255, 0.05);
+            --dot-color: rgba(0, 102, 255, 0.2);
+            --text-color: #2d3436;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Grilla Sutil */
+        .grid-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 1;
+        }
+
+        /* Animación de Puntos */
+        .dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: var(--dot-color);
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: 0 0 10px var(--dot-color);
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            font-weight: 200;
+            color: var(--text-color);
+            letter-spacing: 0.5rem;
+            opacity: 0;
+            animation: fadeIn 3s ease-in-out forwards;
+            text-transform: lowercase;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 0.6; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 1rem; letter-spacing: 0.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container" id="grid"></div>
+    
+    <div class="content">
+        <h1>próximamente...</h1>
+    </div>
+
+    <script>
+        const grid = document.getElementById('grid');
+        const dotsCount = 15;
+
+        function createDot() {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            
+            // Posición inicial alineada a la grilla
+            const x = Math.floor(Math.random() * (window.innerWidth / 50)) * 50;
+            const y = Math.floor(Math.random() * (window.innerHeight / 50)) * 50;
+            
+            dot.style.left = `${x}px`;
+            dot.style.top = `${y}px`;
+            
+            grid.appendChild(dot);
+            animateDot(dot);
+        }
+
+        function animateDot(dot) {
+            const duration = Math.random() * 5000 + 3000;
+            const directions = ['top', 'left'];
+            const direction = directions[Math.floor(Math.random() * directions.length)];
+            const distance = (Math.random() > 0.5 ? 1 : -1) * 100; // Moverse 2 celdas
+
+            const currentPos = parseInt(dot.style[direction]);
+            const nextPos = currentPos + distance;
+
+            dot.animate([
+                { [direction]: `${currentPos}px`, opacity: 0 },
+                { opacity: 1, offset: 0.2 },
+                { opacity: 1, offset: 0.8 },
+                { [direction]: `${nextPos}px`, opacity: 0 }
+            ], {
+                duration: duration,
+                easing: 'linear'
+            }).onfinish = () => {
+                dot.style[direction] = `${nextPos}px`;
+                // Reposicionar si sale de la pantalla
+                if (nextPos < 0 || nextPos > window.innerWidth || nextPos > window.innerHeight) {
+                    dot.remove();
+                    createDot();
+                } else {
+                    animateDot(dot);
+                }
+            };
+        }
+
+        for (let i = 0; i < dotsCount; i++) {
+            setTimeout(createDot, Math.random() * 3000);
+        }
+
+        window.addEventListener('resize', () => {
+            grid.innerHTML = '';
+            for (let i = 0; i < dotsCount; i++) createDot();
+        });
+    </script>
+</body>
+</html>
