@@ -1,0 +1,4 @@
+Contact: mailto:info@jaab.technology
+Expires: 2027-06-20T00:00:00.000Z
+Preferred-Languages: es, en
+Canonical: https://scooglo.org/.well-known/security.txt
